@@ -17,8 +17,7 @@ class CleanseTestCase(TestCase):
             (u'<p>           </p>', u''),
             (u'<span style="font-weight: bold;">Something</span><p></p>',
                 u'<strong>Something</strong>'),
-            (u'<p>abc <span>def <em>ghi</em> jkl</span> mno</p>',
-                u'<p>abc def <em>ghi</em> jkl mno</p>'),
+            (u'<p>abc <span>def <em>ghi</em> jkl</span> mno</p>', None),
             (u'<span style="font-style: italic;">Something</span><p></p>',
                 u'<em>Something</em>'),
             (u'<p>abc<br />def</p>', u'<p>abc<br />def</p>'),
@@ -80,3 +79,10 @@ class CleanseTestCase(TestCase):
         allowed_tags = { 'h1': (), 'h2': () }
 
         self.run_tests(entries, allowed_tags=allowed_tags)
+
+    def test_span_allowed(self):
+        entries = (
+                   ('<p><span>foo</span></p>', None),
+                  )
+
+        self.run_tests(entries)

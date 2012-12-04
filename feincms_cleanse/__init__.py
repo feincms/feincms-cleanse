@@ -90,10 +90,6 @@ def cleanse_html(html,
                 elif 'italic' in style:
                     element.tag = 'em'
 
-            if element.tag == 'span': # still span
-                element.drop_tag() # remove tag, but preserve children and text
-                continue
-
         # remove empty tags if they are not <br />
         elif (not element.text and
               element.tag not in allowed_empty_tags and
