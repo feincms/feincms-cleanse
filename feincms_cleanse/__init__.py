@@ -121,7 +121,7 @@ def cleanse_html(html,
     html = lxml.html.tostring(doc, method='xml')
 
     # remove wrapping tag needed by XML parser
-    html = re.sub(r'</?anything>', '', html)
+    html = re.sub(r'</?anything/? *>', '', html)
 
     # remove all sorts of newline characters
     html = html.replace('\n', ' ').replace('\r', ' ')

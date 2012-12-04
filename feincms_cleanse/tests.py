@@ -64,8 +64,8 @@ class CleanseTestCase(TestCase):
 
     def test_06_whitelist(self):
         entries = (
-#                   (u'<script src="http://abc">foo</script>', u''),
-#                   (u'<script type="text/javascript">foo</script>', u''),
+                   (u'<script src="http://abc">foo</script>', u''),
+                   (u'<script type="text/javascript">foo</script>', u''),
                   )
 
         self.run_tests(entries)
