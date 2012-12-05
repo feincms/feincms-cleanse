@@ -4,6 +4,7 @@ __version__ = '.'.join(map(str, VERSION))
 from BeautifulSoup import BeautifulSoup
 import lxml.html
 import lxml.html.clean
+import lxml.html.defs
 import re
 import unicodedata
 
@@ -38,6 +39,12 @@ def _validate_href(href):
     # path without a protocol, or the protocol is known and http/https.
     # Perhaps also add an option to allow/forbid off-site hrefs?
     return True
+
+def _all_allowed_attrs(allowed_tags):
+    all_allowed_attrs = set()
+    for attr_seq in allowed_tags.values():
+        all_allowed_attrs.update(attr_seq)
+    return all_allowed_attrs
 
 # ------------------------------------------------------------------------
 def cleanse_html(html,
@@ -110,10 +117,12 @@ def cleanse_html(html,
 
     # just to be sure, run cleaner again, but this time with even more
     # strict settings
+    safe_attrs = set(lxml.html.defs.safe_attrs)
+    safe_attrs.update(_all_allowed_attrs(allowed_tags))
     cleaner = lxml.html.clean.Cleaner(
-        allow_tags=allowed_tags.keys(),
+        allow_tags=allowed_tags.keys() + ['anything'],
         remove_unknown_tags=False, # preserve surrounding 'anything' tag
-        style=True, safe_attrs_only=True
+        style=False, safe_attrs_only=True, safe_attrs=safe_attrs
         )
 
     cleaner(doc)

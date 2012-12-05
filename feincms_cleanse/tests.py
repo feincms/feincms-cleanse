@@ -86,3 +86,12 @@ class CleanseTestCase(TestCase):
                   )
 
         self.run_tests(entries)
+
+    def test_span_style_allowed(self):
+        entries = (
+                   ('<span style="color: #00ffff;">est</span>', None),
+                  )
+
+        allowed_tags = { 'html': (), 'body': (), 'p': (), 'span': ('style',) }
+
+        self.run_tests(entries, allowed_tags=allowed_tags)
