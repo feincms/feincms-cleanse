@@ -72,8 +72,8 @@ class CleanseTestCase(TestCase):
 
     def test_07_configuration(self):
         entries = (
-#                   ('<h1>foo</h1>', None),
-#                   ('<h1>foo</h1><h2>bar</h2><h3>baz</h3>', '<h1>foo</h1><h2>bar</h2>baz'),
+                   ('<h1>foo</h1>', None),
+                   ('<h1>foo</h1><h2>bar</h2><h3>baz</h3>', '<h1>foo</h1><h2>bar</h2>baz'),
                   )
 
         allowed_tags = { 'h1': (), 'h2': () }

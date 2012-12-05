@@ -24,7 +24,6 @@ cleanse_html_allowed = {
     'br': (),
     'sub': (),
     'sup': (),
-    'anything': (),
     }
 
 cleanse_html_allowed_empty_tags = ('br',)
@@ -68,7 +67,7 @@ def cleanse_html(html,
         doc = soupparser.fromstring(u'<anything>%s</anything>' % html)
 
     cleaner = lxml.html.clean.Cleaner(
-        allow_tags=allowed_tags.keys() + ['style'],
+        allow_tags=allowed_tags.keys() + ['style', 'anything'],
         remove_unknown_tags=False, # preserve surrounding 'anything' tag
         style=False, safe_attrs_only=False, # do not strip out style
                                             # attributes; we still need
