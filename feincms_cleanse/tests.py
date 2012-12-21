@@ -99,9 +99,12 @@ class CleanseTestCase(TestCase):
     def test_only_whitespace_elements(self):
         entries_no_strip = (
                    (u'<table><tbody><tr><td>One</td><td> </td></tr><tr><td>Two</td><td>Three</td></tr></tbody></table>', None),
+                   (u'<table><tbody><tr><td>One</td><td>&#160;</td></tr><tr><td>Two</td><td>Three</td></tr></tbody></table>', None),
                   )
         entries_strip = (
                    (u'<table><tbody><tr><td>One</td><td> </td></tr><tr><td>Two</td><td>Three</td></tr></tbody></table>',
+                    u'<table><tbody><tr><td>One</td></tr><tr><td>Two</td><td>Three</td></tr></tbody></table>'),
+                   (u'<table><tbody><tr><td>One</td><td>&#160;</td></tr><tr><td>Two</td><td>Three</td></tr></tbody></table>',
                     u'<table><tbody><tr><td>One</td></tr><tr><td>Two</td><td>Three</td></tr></tbody></table>'),
                   )
 

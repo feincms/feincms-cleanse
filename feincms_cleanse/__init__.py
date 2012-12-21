@@ -183,8 +183,4 @@ def cleanse_html(html,
     # add a space before the closing slash in empty tags
     html = re.sub(r'<([^/>]+)/>', r'<\1 />', html)
 
-    # nicify entities and normalize unicode
-    html = unicode(BeautifulSoup(html, convertEntities='xml'))
-    html = unicodedata.normalize('NFKC', html)
-
     return html
