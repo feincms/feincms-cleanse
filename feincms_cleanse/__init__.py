@@ -49,7 +49,8 @@ def _all_allowed_attrs(allowed_tags):
 def cleanse_html(html,
                  allowed_tags=cleanse_html_allowed,
                  allowed_empty_tags=cleanse_html_allowed_empty_tags,
-                 merge_tags=cleanse_html_merge):
+                 merge_tags=cleanse_html_merge,
+                 strip_whitespace_tags=True):
     """
     Clean HTML code from ugly copy-pasted CSS and empty elements
 
@@ -136,13 +137,14 @@ def cleanse_html(html,
     html = html.replace('&#10;', ' ').replace('&#13;', ' ')
     html = html.replace('&#xa;', ' ').replace('&#xd;', ' ')
 
-    # remove elements containing only whitespace or linebreaks
-    whitespace_re = re.compile(r'<([a-z0-9]+)>(<br\s*/>|\&nbsp;|\&#160;|\s)*</\1>')
-    while True:
-        new = whitespace_re.sub('', html)
-        if new == html:
-            break
-        html = new
+    if strip_whitespace_tags:
+        # remove elements containing only whitespace or linebreaks
+        whitespace_re = re.compile(r'<([a-z0-9]+)>(<br\s*/>|\&nbsp;|\&#160;|\s)*</\1>')
+        while True:
+            new = whitespace_re.sub('', html)
+            if new == html:
+                break
+            html = new
 
     # merge tags
     for tag in merge_tags:

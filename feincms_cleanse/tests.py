@@ -95,3 +95,17 @@ class CleanseTestCase(TestCase):
         allowed_tags = { 'html': (), 'body': (), 'p': (), 'span': ('style',) }
 
         self.run_tests(entries, allowed_tags=allowed_tags)
+
+    def test_only_whitespace_elements(self):
+        entries_no_strip = (
+                   (u'<table><tbody><tr><td>One</td><td> </td></tr><tr><td>Two</td><td>Three</td></tr></tbody></table>', None),
+                  )
+        entries_strip = (
+                   (u'<table><tbody><tr><td>One</td><td> </td></tr><tr><td>Two</td><td>Three</td></tr></tbody></table>',
+                    u'<table><tbody><tr><td>One</td></tr><tr><td>Two</td><td>Three</td></tr></tbody></table>'),
+                  )
+
+        allowed_tags = { 'table': (), 'tbody': (), 'tr': (), 'td': (), }
+
+        self.run_tests(entries_no_strip, allowed_tags=allowed_tags, strip_whitespace_tags=False)
+        self.run_tests(entries_strip, allowed_tags=allowed_tags)
