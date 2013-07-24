@@ -1,10 +1,9 @@
-from django.test import TestCase
-from unittest import expectedFailure
+import unittest
 
 from feincms_cleanse import Cleanse
 
 
-class CleanseTestCase(TestCase):
+class CleanseTestCase(unittest.TestCase):
     def run_tests(self, entries, klass=Cleanse):
         for before, after in entries:
             after = before if after is None else after
@@ -26,7 +25,7 @@ class CleanseTestCase(TestCase):
 
         self.run_tests(entries)
 
-    @expectedFailure
+    @unittest.expectedFailure
     def test_02_a_tag(self):
         entries = (
                     ('<a href="/foo">foo</a>', None),
@@ -68,7 +67,7 @@ class CleanseTestCase(TestCase):
 
         self.run_tests(entries)
 
-    @expectedFailure
+    @unittest.expectedFailure
     def test_06_whitelist(self):
         entries = (
                    (u'<script src="http://abc">foo</script>', u''),
@@ -77,7 +76,7 @@ class CleanseTestCase(TestCase):
 
         self.run_tests(entries)
 
-    @expectedFailure
+    @unittest.expectedFailure
     def test_07_configuration(self):
         class MyCleanse(Cleanse):
             allowed_tags = { 'h1': (), 'h2': () }
