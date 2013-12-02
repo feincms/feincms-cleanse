@@ -14,6 +14,7 @@ class CleanseTestCase(SimpleTestCase):
     def test_01_cleanse(self):
         class MyCleanse(Cleanse):
             empty_content_tags = ('td', 'th')
+
         entries = [
             (u'<p>&nbsp;</p>', u''),
             (u'<p>           </p>', u''),
@@ -99,5 +100,5 @@ class CleanseTestCase(SimpleTestCase):
 
     def test_09_a_anchor(self):
         entries = (
-            ('<p><a name="test"></a>Text</p>', '<p><a name="test"></a>Text</p>'),
+            ('<p><a name="test"></a>Text</p>', None),
         )

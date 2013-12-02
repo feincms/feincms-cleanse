@@ -156,6 +156,8 @@ class Cleanse(object):
 
         # merge tags
         for tag in self.merge_tags:
+            # removes tags like </h2><h2>
+            # TODO: are first and last words really necessary
             merge_str = u'\s*</%s>\s*<%s>\s*' % (tag, tag)
             while True:
                 new = re.sub(merge_str, u' ', html)
