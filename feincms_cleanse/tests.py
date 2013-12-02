@@ -1,10 +1,10 @@
-from django.test import TestCase
+from django.test import SimpleTestCase
 from unittest import expectedFailure
 
 from feincms_cleanse import Cleanse
 
 
-class CleanseTestCase(TestCase):
+class CleanseTestCase(SimpleTestCase):
     def run_tests(self, entries, klass=Cleanse):
         for before, after in entries:
             after = before if after is None else after
@@ -12,6 +12,9 @@ class CleanseTestCase(TestCase):
             self.assertEqual(result, after, u"Cleaning '%s', expected '%s' but got '%s'" % (before, after, result))
 
     def test_01_cleanse(self):
+        class MyCleanse(Cleanse):
+            empty_content_tags = ('td', 'th')
+
         entries = [
             (u'<p>&nbsp;</p>', u''),
             (u'<p>           </p>', u''),
@@ -24,10 +27,10 @@ class CleanseTestCase(TestCase):
             (u'<p>abc<br />def</p>', u'<p>abc<br />def</p>'),
             ]
 
-        self.run_tests(entries)
+        self.run_tests(entries, klass=MyCleanse)
 
-    @expectedFailure
     def test_02_a_tag(self):
+
         entries = (
                     ('<a href="/foo">foo</a>', None),
                     ('<a href="/foo" target="some" name="bar" title="baz" cookies="yesplease">foo</a>', '<a href="/foo" target="some" name="bar" title="baz">foo</a>'),
@@ -57,6 +60,8 @@ class CleanseTestCase(TestCase):
         self.run_tests(entries)
 
     def test_05_p_in_p(self):
+        class MyCleanse(Cleanse):
+            empty_content_tags = ('td', 'th')
         entries = (
                    ('<p><p>foo</p></p>', '<p>foo</p>'),
                    (u'<p><p><p>&nbsp;</p> </p><p><br /></p></p>', u' '),
@@ -66,9 +71,8 @@ class CleanseTestCase(TestCase):
                    ('<p>foo<p>bar</p>baz</p>', '<p>foo</p><p>bar</p>baz'),
                   )
 
-        self.run_tests(entries)
+        self.run_tests(entries, klass=MyCleanse)
 
-    @expectedFailure
     def test_06_whitelist(self):
         entries = (
                    (u'<script src="http://abc">foo</script>', u''),
@@ -77,7 +81,6 @@ class CleanseTestCase(TestCase):
 
         self.run_tests(entries)
 
-    @expectedFailure
     def test_07_configuration(self):
         class MyCleanse(Cleanse):
             allowed_tags = { 'h1': (), 'h2': () }
@@ -96,3 +99,8 @@ class CleanseTestCase(TestCase):
                   )
 
         self.run_tests(entries)
+
+    def test_09_a_anchor(self):
+        entries = (
+            ('<p><a name="test"></a>Text</p>', None),
+        )

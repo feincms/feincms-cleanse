@@ -9,6 +9,10 @@ import unicodedata
 
 __all__ = ('cleanse_html', 'Cleanse')
 
+
+nonestr = lambda s: '' if s is None else s.strip()
+
+
 class Cleanse(object):
     allowed_tags = {
         'a': ('href', 'name', 'target', 'title'),
@@ -16,7 +20,7 @@ class Cleanse(object):
         'h3': (),
         'strong': (),
         'em': (),
-        'p': (),
+        'p': ('class',),
         'ul': (),
         'ol': (),
         'li': (),
@@ -29,7 +33,7 @@ class Cleanse(object):
 
     empty_tags = ('br',)
 
-    empty_content_tags = ('td', 'th', 'p')
+    empty_content_tags = ('td', 'th', 'p', 'a')
 
     merge_tags = ('h2', 'h3', 'strong', 'em', 'ul', 'ol', 'sub', 'sup')
 
@@ -40,6 +44,8 @@ class Cleanse(object):
         # TODO: Implement me! This should ensure that the href is either a
         # path without a protocol, or the protocol is known and http/https.
         # Perhaps also add an option to allow/forbid off-site hrefs?
+        if href.startswith('javascript'):
+            return False
         return True
 
 
@@ -101,16 +107,19 @@ class Cleanse(object):
                     continue
 
             # remove empty tags if they are not <br />
-            elif (not element.text and
+            elif (not nonestr(element.text) and
                   element.tag not in (self.empty_tags + self.empty_content_tags)
                   and not len(element)):
+                # drop_tag leaves tag content so if we have <p>&nbsp;</p>
+                # we're left with &nbsp;
+                element.text = ''
                 element.drop_tag()
                 continue
 
             elif element.tag == 'li':
                 # remove p-in-li tags
                 for p in element.findall('p'):
-                    p.text = ' ' + p.text +' '
+                    p.text = ' ' + p.text + ' '
                     p.drop_tag()
 
             # Hook for custom filters:
@@ -125,7 +134,7 @@ class Cleanse(object):
             # Clean hrefs so that they are benign
             href = element.attrib.get('href', None)
             if href is not None and not self.validate_href(href):
-                del element.attrib['href']
+                element.attrib['href'] = ''
 
         # just to be sure, run cleaner again, but this time with even more
         # strict settings
@@ -140,7 +149,7 @@ class Cleanse(object):
         html = lxml.html.tostring(doc, method='xml')
 
         # remove wrapping tag needed by XML parser
-        html = re.sub(r'</?anything>', '', html)
+        html = re.sub(r'</?anything/?>', '', html)
 
         # remove all sorts of newline characters
         html = html.replace('\n', ' ').replace('\r', ' ')
@@ -149,6 +158,8 @@ class Cleanse(object):
 
         # merge tags
         for tag in self.merge_tags:
+            # removes tags like </h2><h2>
+            # TODO: are first and last words really necessary
             merge_str = u'\s*</%s>\s*<%s>\s*' % (tag, tag)
             while True:
                 new = re.sub(merge_str, u' ', html)
@@ -185,6 +196,7 @@ class Cleanse(object):
         html = unicodedata.normalize('NFKC', html)
 
         return html
+
 
 # ------------------------------------------------------------------------
 def cleanse_html(html):
