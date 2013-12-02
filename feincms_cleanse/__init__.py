@@ -9,6 +9,10 @@ import unicodedata
 
 __all__ = ('cleanse_html', 'Cleanse')
 
+
+nonestr = lambda s: '' if s is None else s.strip()
+
+
 class Cleanse(object):
     allowed_tags = {
         'a': ('href', 'name', 'target', 'title'),
@@ -101,16 +105,19 @@ class Cleanse(object):
                     continue
 
             # remove empty tags if they are not <br />
-            elif (not element.text and
+            elif (not nonestr(element.text) and
                   element.tag not in (self.empty_tags + self.empty_content_tags)
                   and not len(element)):
+                # drop_tag leaves tag content so if we have <p>&nbsp;</p>
+                # we're left with &nbsp;
+                element.text = ''
                 element.drop_tag()
                 continue
 
             elif element.tag == 'li':
                 # remove p-in-li tags
                 for p in element.findall('p'):
-                    p.text = ' ' + p.text +' '
+                    p.text = ' ' + p.text + ' '
                     p.drop_tag()
 
             # Hook for custom filters:
@@ -140,7 +147,7 @@ class Cleanse(object):
         html = lxml.html.tostring(doc, method='xml')
 
         # remove wrapping tag needed by XML parser
-        html = re.sub(r'</?anything>', '', html)
+        html = re.sub(r'</?anything/?>', '', html)
 
         # remove all sorts of newline characters
         html = html.replace('\n', ' ').replace('\r', ' ')
@@ -185,6 +192,7 @@ class Cleanse(object):
         html = unicodedata.normalize('NFKC', html)
 
         return html
+
 
 # ------------------------------------------------------------------------
 def cleanse_html(html):

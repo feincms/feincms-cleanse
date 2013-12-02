@@ -28,7 +28,6 @@ class CleanseTestCase(SimpleTestCase):
 
         self.run_tests(entries, klass=MyCleanse)
 
-    @expectedFailure
     def test_02_a_tag(self):
 
         entries = (
@@ -71,7 +70,6 @@ class CleanseTestCase(SimpleTestCase):
 
         self.run_tests(entries)
 
-    @expectedFailure
     def test_06_whitelist(self):
         entries = (
                    (u'<script src="http://abc">foo</script>', u''),
@@ -80,7 +78,6 @@ class CleanseTestCase(SimpleTestCase):
 
         self.run_tests(entries)
 
-    @expectedFailure
     def test_07_configuration(self):
         class MyCleanse(Cleanse):
             allowed_tags = { 'h1': (), 'h2': () }
