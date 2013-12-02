@@ -60,6 +60,8 @@ class CleanseTestCase(SimpleTestCase):
         self.run_tests(entries)
 
     def test_05_p_in_p(self):
+        class MyCleanse(Cleanse):
+            empty_content_tags = ('td', 'th')
         entries = (
                    ('<p><p>foo</p></p>', '<p>foo</p>'),
                    (u'<p><p><p>&nbsp;</p> </p><p><br /></p></p>', u' '),
@@ -69,7 +71,7 @@ class CleanseTestCase(SimpleTestCase):
                    ('<p>foo<p>bar</p>baz</p>', '<p>foo</p><p>bar</p>baz'),
                   )
 
-        self.run_tests(entries)
+        self.run_tests(entries, klass=MyCleanse)
 
     def test_06_whitelist(self):
         entries = (

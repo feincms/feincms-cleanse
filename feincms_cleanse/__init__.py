@@ -44,6 +44,8 @@ class Cleanse(object):
         # TODO: Implement me! This should ensure that the href is either a
         # path without a protocol, or the protocol is known and http/https.
         # Perhaps also add an option to allow/forbid off-site hrefs?
+        if href.startswith('javascript'):
+            return False
         return True
 
 
@@ -132,7 +134,7 @@ class Cleanse(object):
             # Clean hrefs so that they are benign
             href = element.attrib.get('href', None)
             if href is not None and not self.validate_href(href):
-                del element.attrib['href']
+                element.attrib['href'] = ''
 
         # just to be sure, run cleaner again, but this time with even more
         # strict settings
