@@ -16,7 +16,7 @@ class Cleanse(object):
         'h3': (),
         'strong': (),
         'em': (),
-        'p': (),
+        'p': ('class',),
         'ul': (),
         'ol': (),
         'li': (),
@@ -29,7 +29,7 @@ class Cleanse(object):
 
     empty_tags = ('br',)
 
-    empty_content_tags = ('td', 'th', 'p')
+    empty_content_tags = ('td', 'th', 'p', 'a')
 
     merge_tags = ('h2', 'h3', 'strong', 'em', 'ul', 'ol', 'sub', 'sup')
 
