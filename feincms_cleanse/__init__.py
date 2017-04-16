@@ -99,11 +99,7 @@ class Cleanse(object):
                         element.tag = 'strong'
                     elif 'italic' in style:
                         element.tag = 'em'
-
-                if element.tag == 'span':  # still span
-                    # remove tag, but preserve children and text
-                    element.drop_tag()
-                    continue
+                continue
 
             # remove empty tags if they are not <br />
             elif (not element.text and
