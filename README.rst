@@ -1,3 +1,5 @@
+**NOTE: Please use https://github.com/matthiask/html-sanitizer instead, it's the successor and works the same (except with less bugs).**
+
 ===============
 feincms-cleanse
 ===============
